@@ -1,12 +1,13 @@
 {
-  "name": "node-health-checker",
+  "name": "@hungtran-it/node-health-checker",
   "version": "1.2.0",
   "description": "Simple Nodejs package to simplify applications based in Node, to trace the healthy of the pods",
   "author": "Gritzko D. Kleiner <gritzkoo@hotmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hungtran-it/nodejs-health-checker.git.git"
+    "url": "git@github.com:hungtran-it/nodejs-health-checker.git",
+    "directory": "packages/name"
   },
   "keywords": [
     "nodejs",
@@ -57,5 +58,8 @@
   },
   "files": [
     "dist/**/*"
-  ]
+  ],
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/hungtran-it"
+  }
 }
