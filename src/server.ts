@@ -24,14 +24,9 @@ server.get("/health-check/readiness", async (_, res) => {
           host: "localhost",
         },
         {
-          type: HealthTypes.Memcached,
-          name: "My memcache integration",
-          host: "localhost:11211",
-        },
-        {
-          type: HealthTypes.Memcached,
-          name: "My memcache integration false",
-          host: "localhost:11299",
+          type: HealthTypes.MongoDb,
+          name: "MongoDb integration",
+          uri: "mongodb://localhost:27017/checker",
         },
         {
           type: HealthTypes.Web,

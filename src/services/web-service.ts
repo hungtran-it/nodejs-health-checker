@@ -6,7 +6,7 @@ export async function checkWebIntegration(config: IntegrationConfig): Promise<HT
     const headers = config.headers?.map((item) => {
       return [item.key, item.value];
     });
-    fetch(config.host, {
+    fetch(config.host || '', {
       timeout: config.timeout,
       headers,
     })

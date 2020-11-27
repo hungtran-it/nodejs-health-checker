@@ -8,6 +8,7 @@ import {
   Integration,
   IntegrationConfig,
 } from "../interfaces/types";
+import { checkMongoDb } from '../services/mongodb-service';
 import { checkRedisClient } from "../services/redis-service";
 import { checkWebIntegration } from "../services/web-service";
 
@@ -38,10 +39,15 @@ export async function HealthcheckerDetailedCheck(config: ApplicationConfig): Pro
       case HealthTypes.Web:
         promisesList.push(webCheck(resolveHost(item)));
         break;
+
+      case HealthTypes.MongoDb:
+        promisesList.push(mongoDbCheck(resolveHost(item)));
+        break;
     }
   });
   const results = await Promise.all(promisesList);
   const integrations = results.map((item) => item);
+
   return {
     name: config.name || "",
     version: config.version || "",
@@ -51,6 +57,7 @@ export async function HealthcheckerDetailedCheck(config: ApplicationConfig): Pro
     integrations,
   };
 }
+
 /**
  * redisCheck used to check all redis integrations informed
  * @param config IntegrationConfig with redis parameters
@@ -60,12 +67,30 @@ async function redisCheck(config: IntegrationConfig): Promise<Integration> {
   const result = await checkRedisClient(config);
   config.port = config.port || Defaults.RedisPort;
   config.db = config.db || Defaults.RedisDB;
+
   return {
     name: config.name,
     kind: HealthIntegration.RedisIntegration,
     status: result.status,
     response_time: getDeltaTime(start),
-    url: resolveHost(config).host,
+    url: config.host,
+    // url: resolveHost(config).host,
+    error: result.error,
+  };
+}
+
+async function mongoDbCheck(config: IntegrationConfig): Promise<Integration> {
+  const start = new Date().getTime();
+  const result = await checkMongoDb(config);
+  config.port = config.port || Defaults.RedisPort;
+  config.db = config.db || Defaults.RedisDB;
+
+  return {
+    name: config.name,
+    kind: HealthIntegration.MongoDbntegration,
+    status: result.status,
+    response_time: getDeltaTime(start),
+    url: config.host,
     error: result.error,
   };
 }
@@ -78,6 +103,7 @@ async function webCheck(config: IntegrationConfig): Promise<Integration> {
   const start = new Date().getTime();
   config.timeout = config.timeout || Defaults.WebTimeout;
   const result = await checkWebIntegration(config);
+
   return {
     name: config.name,
     kind: HealthIntegration.WebServiceIntegration,
@@ -96,6 +122,7 @@ function resolveHost(config: IntegrationConfig): IntegrationConfig {
   if (config.port) {
     config.host += ":" + config.port;
   }
+
   return config;
 }
 

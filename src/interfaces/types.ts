@@ -20,7 +20,7 @@ export interface Integration {
   kind: HealthIntegration;
   status: boolean;
   response_time: number;
-  url: string;
+  url?: string;
   error?: any;
 }
 // Auth is a default  to map user/pass protocol
@@ -38,7 +38,8 @@ export interface ApplicationConfig {
 export interface IntegrationConfig {
   type: HealthTypes;
   name: string;
-  host: string;
+  host?: string;
+  uri?: string;
   port?: number;
   headers?: HTTPHeader[];
   db?: number;
@@ -62,12 +63,13 @@ export interface HTTPHeader {
 export enum HealthTypes {
   Redis = "Redis",
   Web = "Web",
-  Memcached = "Memcached",
+  MongoDb = "MongoDb",
 }
 // Mapped types for kinds of integrations
 export enum HealthIntegration {
   RedisIntegration = "Redis DB integration",
   WebServiceIntegration = "Web integrated API",
+  MongoDbntegration = "MongoDb integraton",
   // MemcachedIntegration = "Memcached integraton",
   // DynamoDbIntegration = "AWS Dynamo DB",
 }
@@ -76,6 +78,7 @@ export enum Defaults {
   RedisTimeout = 2 * 1000,
   RedisDB = 0,
   RedisPort = 6379,
+  MongoDbTimeout = 10000,
   MemcachedTimeout = 1000,
   MemcachePort = 11211,
   WebTimeout = 10 * 1000,
